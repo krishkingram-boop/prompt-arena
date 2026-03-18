@@ -299,7 +299,7 @@ io.on('connection', (socket) => {
     const room = {
       code, hostId: socket.id, hostName: playerName,
       players: [player],
-      settings: { roundTime: settings.roundTime || 60, judgePersona: settings.judgePersona || 'gordon', totalRounds: 5 },
+      settings: { roundTime: settings.roundTime || 60, judgePersona: settings.judgePersona || 'gordon', totalRounds: 5, maxPlayers: settings.maxPlayers || 75 },
       phase: 'lobby', currentRound: 0, totalRounds: 5,
       usedScenarios: [], currentScenario: null,
       submissions: {}, scores: { [socket.id]: 0 }, roundTimerInterval: null
@@ -317,7 +317,7 @@ io.on('connection', (socket) => {
     const room = rooms.get(code);
     if (!room) { socket.emit('join_error', { message: 'Room not found. Check the code and try again.' }); return; }
     if (room.phase !== 'lobby') { socket.emit('join_error', { message: 'Game already in progress.' }); return; }
-    if (room.players.length >= 8) { socket.emit('join_error', { message: 'Room is full (max 8 players).' }); return; }
+    if (room.players.length >= (room.settings.maxPlayers || 75)) { socket.emit('join_error', { message: 'Room is full (max 8 players).' }); return; }
     const COLORS = ['#1D9E75', '#D85A30', '#EF9F27', '#D4537E', '#378ADD', '#639922'];
     const color = COLORS[(room.players.length - 1) % COLORS.length];
     const player = { id: socket.id, name: playerName, color, isHost: false, ready: false };
