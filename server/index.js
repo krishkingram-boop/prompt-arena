@@ -220,9 +220,9 @@ function generateCode() {
 }
 
 function pickScenario(room) {
-  const remaining = SCENARIOS.filter(s => !room.usedScenarios.includes(s.id));
-  const pool = remaining.length ? remaining : SCENARIOS;
-  const picked = pool[Math.floor(Math.random() * pool.length)];
+  const ORDER = ['role-play', 'style-unbundle', 'emotion', 'few-shot', 'synthetic'];
+  const nextId = ORDER[room.usedScenarios.length % ORDER.length];
+  const picked = SCENARIOS.find(s => s.id === nextId) || SCENARIOS[0];
   room.usedScenarios.push(picked.id);
   return picked;
 }
